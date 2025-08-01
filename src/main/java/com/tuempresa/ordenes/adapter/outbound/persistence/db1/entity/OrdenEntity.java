@@ -1,6 +1,6 @@
 package com.tuempresa.ordenes.adapter.outbound.persistence.db1.entity;
 
-import com.tuempresa.ordenes.domain.model.OrdenEstado;
+import com.tuempresa.ordenes.domain.model.enums.OrdenEstado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

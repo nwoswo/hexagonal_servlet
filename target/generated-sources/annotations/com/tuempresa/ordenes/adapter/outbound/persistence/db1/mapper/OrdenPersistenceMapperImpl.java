@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-08-01T11:49:06-0500",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.4.1 (Amazon.com Inc.)"
+    date = "2025-08-01T12:56:28-0500",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.42.50.v20250729-0351, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class OrdenPersistenceMapperImpl implements OrdenPersistenceMapper {
@@ -23,15 +23,15 @@ public class OrdenPersistenceMapperImpl implements OrdenPersistenceMapper {
 
         OrdenEntity.OrdenEntityBuilder ordenEntity = OrdenEntity.builder();
 
-        ordenEntity.id( orden.getId() );
-        ordenEntity.numeroOrden( orden.getNumeroOrden() );
+        ordenEntity.clienteEmail( orden.getClienteEmail() );
         ordenEntity.clienteId( orden.getClienteId() );
         ordenEntity.clienteNombre( orden.getClienteNombre() );
-        ordenEntity.clienteEmail( orden.getClienteEmail() );
-        ordenEntity.total( orden.getTotal() );
         ordenEntity.estado( orden.getEstado() );
-        ordenEntity.fechaCreacion( orden.getFechaCreacion() );
         ordenEntity.fechaActualizacion( orden.getFechaActualizacion() );
+        ordenEntity.fechaCreacion( orden.getFechaCreacion() );
+        ordenEntity.id( orden.getId() );
+        ordenEntity.numeroOrden( orden.getNumeroOrden() );
+        ordenEntity.total( orden.getTotal() );
 
         return ordenEntity.build();
     }
@@ -44,15 +44,15 @@ public class OrdenPersistenceMapperImpl implements OrdenPersistenceMapper {
 
         Orden.OrdenBuilder orden = Orden.builder();
 
-        orden.id( entity.getId() );
-        orden.numeroOrden( entity.getNumeroOrden() );
+        orden.clienteEmail( entity.getClienteEmail() );
         orden.clienteId( entity.getClienteId() );
         orden.clienteNombre( entity.getClienteNombre() );
-        orden.clienteEmail( entity.getClienteEmail() );
-        orden.total( entity.getTotal() );
         orden.estado( entity.getEstado() );
-        orden.fechaCreacion( entity.getFechaCreacion() );
         orden.fechaActualizacion( entity.getFechaActualizacion() );
+        orden.fechaCreacion( entity.getFechaCreacion() );
+        orden.id( entity.getId() );
+        orden.numeroOrden( entity.getNumeroOrden() );
+        orden.total( entity.getTotal() );
 
         return orden.build();
     }

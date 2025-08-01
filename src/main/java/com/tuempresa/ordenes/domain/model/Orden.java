@@ -1,5 +1,6 @@
 package com.tuempresa.ordenes.domain.model;
 
+import com.tuempresa.ordenes.domain.model.enums.OrdenEstado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

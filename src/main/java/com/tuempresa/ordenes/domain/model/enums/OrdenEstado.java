@@ -1,4 +1,4 @@
-package com.tuempresa.ordenes.domain.model;
+package com.tuempresa.ordenes.domain.model.enums;
 
 public enum OrdenEstado {
     PENDIENTE,

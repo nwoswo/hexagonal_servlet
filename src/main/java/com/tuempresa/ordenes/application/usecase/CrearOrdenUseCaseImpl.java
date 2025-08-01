@@ -9,7 +9,7 @@ import com.tuempresa.ordenes.application.port.out.OrdenRepository;
 import com.tuempresa.ordenes.domain.event.OrdenCreadaEvent;
 import com.tuempresa.ordenes.domain.model.ItemOrden;
 import com.tuempresa.ordenes.domain.model.Orden;
-import com.tuempresa.ordenes.domain.model.OrdenEstado;
+import com.tuempresa.ordenes.domain.model.enums.OrdenEstado;
 import com.tuempresa.ordenes.domain.service.OrdenDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
