@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ordenes_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ordenes-group-prod
+      auto-offset-reset: latest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+# Kafka topics configuration
+kafka:
+  topics:
+    orden-created: orden-created
+    orden-updated: orden-updated
+    orden-cancelled: orden-cancelled
+    item-orden-created: item-orden-created
+    item-orden-updated: item-orden-updated
+    item-orden-deleted: item-orden-deleted
+
+# RabbitMQ queues configuration
+rabbitmq:
+  queues:
+    orden-created: orden-created
+    orden-cancelled: orden-cancelled
+    item-orden-created: item-orden-created
+
+# External service configuration
+external:
+  services:
+    inventory:
+      url: ${INVENTORY_SERVICE_URL:http://inventory-service:8081/api/inventory}
+      timeout: ${INVENTORY_TIMEOUT:5000}
+    payment:
+      url: ${PAYMENT_SERVICE_URL:http://payment-service:8082/api/payment}
+      timeout: ${PAYMENT_TIMEOUT:5000} 

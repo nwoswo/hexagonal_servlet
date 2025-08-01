@@ -1,0 +1,37 @@
+[
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/api/inventory/.*"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "available": true,
+        "stock": 100,
+        "productId": "${productId}",
+        "message": "Product available"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/api/inventory/check"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "available": true,
+        "stock": 50,
+        "message": "Stock checked successfully"
+      }
+    }
+  }
+] 

@@ -1,0 +1,8 @@
+kafka:
+  topics:
+    orden-created: orden-created-topic
+    orden-updated: orden-updated-topic
+    orden-cancelled: orden-cancelled-topic
+    item-orden-created: item-orden-created-topic
+    item-orden-updated: item-orden-updated-topic
+    item-orden-deleted: item-orden-deleted-topic 

@@ -1,0 +1,37 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/api/payment/process"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "success": true,
+        "transactionId": "TXN-${random.uuid}",
+        "amount": "${amount}",
+        "message": "Payment processed successfully"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/api/payment/status/.*"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "status": "COMPLETED",
+        "transactionId": "${transactionId}",
+        "message": "Payment completed"
+      }
+    }
+  }
+] 

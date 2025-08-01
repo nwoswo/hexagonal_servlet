@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ordenes-service
+
+server:
+  port: 9000
+
+logging:
+  level:
+    com.tuempresa.ordenes: DEBUG
+    org.springframework.kafka: INFO
+    org.springframework.amqp: INFO 
