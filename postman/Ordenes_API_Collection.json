@@ -1,0 +1,637 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789abc",
+		"name": "Ordenes API - Hexagonal Architecture",
+		"description": "Colección completa de casos de prueba para la API de Órdenes con arquitectura hexagonal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Crear Orden",
+			"item": [
+				{
+					"name": "Crear Orden Válida",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-001\",\n  \"clienteNombre\": \"Juan Pérez\",\n  \"clienteEmail\": \"juan.perez@email.com\",\n  \"items\": [\n    {\n      \"productoId\": \"PROD-001\",\n      \"productoNombre\": \"Laptop Dell\",\n      \"productoDescripcion\": \"Laptop Dell Inspiron 15\",\n      \"precioUnitario\": 899.99,\n      \"cantidad\": 1\n    },\n    {\n      \"productoId\": \"PROD-002\",\n      \"productoNombre\": \"Mouse Inalámbrico\",\n      \"productoDescripcion\": \"Mouse inalámbrico Logitech\",\n      \"precioUnitario\": 25.50,\n      \"cantidad\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Crea una orden válida con múltiples items"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Orden Sin Items",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-002\",\n  \"clienteNombre\": \"María García\",\n  \"clienteEmail\": \"maria.garcia@email.com\",\n  \"items\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Intenta crear una orden sin items (debería fallar)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Orden Email Inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-003\",\n  \"clienteNombre\": \"Carlos López\",\n  \"clienteEmail\": \"email-invalido\",\n  \"items\": [\n    {\n      \"productoId\": \"PROD-003\",\n      \"productoNombre\": \"Teclado Mecánico\",\n      \"precioUnitario\": 150.00,\n      \"cantidad\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Intenta crear una orden con email inválido"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Orden Precio Negativo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-004\",\n  \"clienteNombre\": \"Ana Martínez\",\n  \"clienteEmail\": \"ana.martinez@email.com\",\n  \"items\": [\n    {\n      \"productoId\": \"PROD-004\",\n      \"productoNombre\": \"Monitor\",\n      \"precioUnitario\": -100.00,\n      \"cantidad\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Intenta crear una orden con precio negativo"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para crear órdenes"
+		},
+		{
+			"name": "2. Obtener Orden",
+			"item": [
+				{
+					"name": "Obtener Orden por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/{{ordenId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"{{ordenId}}"
+							]
+						},
+						"description": "Obtiene una orden específica por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Orden por Número",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/numero/{{numeroOrden}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"numero",
+								"{{numeroOrden}}"
+							]
+						},
+						"description": "Obtiene una orden por su número de orden"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Orden Inexistente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/00000000-0000-0000-0000-000000000000",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"00000000-0000-0000-0000-000000000000"
+							]
+						},
+						"description": "Intenta obtener una orden que no existe"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Órdenes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Obtiene todas las órdenes del sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Órdenes por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/cliente/{{clienteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"cliente",
+								"{{clienteId}}"
+							]
+						},
+						"description": "Obtiene todas las órdenes de un cliente específico"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para obtener órdenes"
+		},
+		{
+			"name": "3. Agregar Item a Orden",
+			"item": [
+				{
+					"name": "Agregar Item Válido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productoId\": \"PROD-005\",\n  \"productoNombre\": \"Auriculares Bluetooth\",\n  \"productoDescripcion\": \"Auriculares inalámbricos con cancelación de ruido\",\n  \"precioUnitario\": 89.99,\n  \"cantidad\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/{{ordenId}}/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"{{ordenId}}",
+								"items"
+							]
+						},
+						"description": "Agrega un item válido a una orden existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Item a Orden Inexistente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productoId\": \"PROD-006\",\n  \"productoNombre\": \"Webcam HD\",\n  \"precioUnitario\": 45.00,\n  \"cantidad\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/00000000-0000-0000-0000-000000000000/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"00000000-0000-0000-0000-000000000000",
+								"items"
+							]
+						},
+						"description": "Intenta agregar un item a una orden que no existe"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Item Cantidad Cero",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productoId\": \"PROD-007\",\n  \"productoNombre\": \"Cable USB\",\n  \"precioUnitario\": 5.99,\n  \"cantidad\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/{{ordenId}}/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"{{ordenId}}",
+								"items"
+							]
+						},
+						"description": "Intenta agregar un item con cantidad cero"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para agregar items a órdenes"
+		},
+		{
+			"name": "4. Cancelar Orden",
+			"item": [
+				{
+					"name": "Cancelar Orden Válida",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"motivo\": \"Cliente solicitó cancelación\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/{{ordenId}}/cancelar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"{{ordenId}}",
+								"cancelar"
+							]
+						},
+						"description": "Cancela una orden válida"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Orden Inexistente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"motivo\": \"Error en el pedido\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/00000000-0000-0000-0000-000000000000/cancelar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"00000000-0000-0000-0000-000000000000",
+								"cancelar"
+							]
+						},
+						"description": "Intenta cancelar una orden que no existe"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Orden Sin Motivo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"motivo\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/{{ordenId}}/cancelar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"{{ordenId}}",
+								"cancelar"
+							]
+						},
+						"description": "Intenta cancelar una orden sin motivo"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para cancelar órdenes"
+		},
+		{
+			"name": "5. Casos de Error",
+			"item": [
+				{
+					"name": "JSON Inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-005\",\n  \"clienteNombre\": \"Test User\",\n  \"clienteEmail\": \"test@email.com\",\n  \"items\": [\n    {\n      \"productoId\": \"PROD-008\",\n      \"productoNombre\": \"Producto Test\",\n      \"precioUnitario\": 100.00,\n      \"cantidad\": 1\n    }\n  ]\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Envía JSON malformado (sin cerrar la llave)"
+					},
+					"response": []
+				},
+				{
+					"name": "Método No Permitido",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Intenta usar método PUT no permitido"
+					},
+					"response": []
+				},
+				{
+					"name": "Endpoint No Existente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes/inexistente",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes",
+								"inexistente"
+							]
+						},
+						"description": "Accede a un endpoint que no existe"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para errores generales"
+		},
+		{
+			"name": "6. Casos de Rendimiento",
+			"item": [
+				{
+					"name": "Crear Orden con Muchos Items",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clienteId\": \"CLI-PERF-001\",\n  \"clienteNombre\": \"Cliente Rendimiento\",\n  \"clienteEmail\": \"perf@test.com\",\n  \"items\": [\n    {\n      \"productoId\": \"PROD-PERF-001\",\n      \"productoNombre\": \"Producto 1\",\n      \"precioUnitario\": 10.00,\n      \"cantidad\": 1\n    },\n    {\n      \"productoId\": \"PROD-PERF-002\",\n      \"productoNombre\": \"Producto 2\",\n      \"precioUnitario\": 20.00,\n      \"cantidad\": 2\n    },\n    {\n      \"productoId\": \"PROD-PERF-003\",\n      \"productoNombre\": \"Producto 3\",\n      \"precioUnitario\": 30.00,\n      \"cantidad\": 3\n    },\n    {\n      \"productoId\": \"PROD-PERF-004\",\n      \"productoNombre\": \"Producto 4\",\n      \"precioUnitario\": 40.00,\n      \"cantidad\": 4\n    },\n    {\n      \"productoId\": \"PROD-PERF-005\",\n      \"productoNombre\": \"Producto 5\",\n      \"precioUnitario\": 50.00,\n      \"cantidad\": 5\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Crea una orden con 5 items para probar rendimiento"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Órdenes (Rendimiento)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/ordenes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ordenes"
+							]
+						},
+						"description": "Obtiene todas las órdenes para medir rendimiento con datos"
+					},
+					"response": []
+				}
+			],
+			"description": "Casos de prueba para rendimiento"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script que se ejecuta antes de cada request",
+					"console.log('Ejecutando request: ' + pm.request.name);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script que se ejecuta después de cada request",
+					"pm.test('Status code is 200', function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"// Guardar el ID de la orden si se crea exitosamente",
+					"if (pm.response.code === 201 && pm.request.name.includes('Crear')) {",
+					"    const response = pm.response.json();",
+					"    if (response && response.id) {",
+					"        pm.collectionVariables.set('ordenId', response.id);",
+					"        pm.collectionVariables.set('numeroOrden', response.numeroOrden);",
+					"        console.log('Orden creada con ID: ' + response.id);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9000",
+			"type": "string",
+			"description": "URL base de la API"
+		},
+		{
+			"key": "ordenId",
+			"value": "",
+			"type": "string",
+			"description": "ID de la orden creada (se actualiza automáticamente)"
+		},
+		{
+			"key": "numeroOrden",
+			"value": "",
+			"type": "string",
+			"description": "Número de la orden creada (se actualiza automáticamente)"
+		},
+		{
+			"key": "clienteId",
+			"value": "CLI-001",
+			"type": "string",
+			"description": "ID del cliente para pruebas"
+		}
+	]
+} 

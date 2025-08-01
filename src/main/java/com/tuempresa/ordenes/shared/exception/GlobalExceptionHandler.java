@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,29 +22,23 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(OrdenNoEncontradaException.class)
     public ResponseEntity<ErrorResponse> handleOrdenNoEncontrada(OrdenNoEncontradaException ex) {
-        log.error("Orden no encontrada: {}", ex.getMessage());
-        
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Not Found")
-                .message(ex.getMessage())
-                .build();
-        
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            "Orden no encontrada",
+            HttpStatus.NOT_FOUND.value(),
+            LocalDateTime.now()
+        );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
     
     @ExceptionHandler(OrdenNoPuedeSerCanceladaException.class)
     public ResponseEntity<ErrorResponse> handleOrdenNoPuedeSerCancelada(OrdenNoPuedeSerCanceladaException ex) {
-        log.error("Orden no puede ser cancelada: {}", ex.getMessage());
-        
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error("Bad Request")
-                .message(ex.getMessage())
-                .build();
-        
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            "Orden no puede ser cancelada",
+            HttpStatus.BAD_REQUEST.value(),
+            LocalDateTime.now()
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
     
@@ -50,47 +46,57 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleOrdenException(OrdenException ex) {
         log.error("Error de dominio: {}", ex.getMessage());
         
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error("Bad Request")
-                .message(ex.getMessage())
-                .build();
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            "Bad Request",
+            HttpStatus.BAD_REQUEST.value(),
+            LocalDateTime.now()
+        );
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-        log.error("Error de validación: {}", ex.getMessage());
-        
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
-            errors.put(error.getField(), error.getDefaultMessage())
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+        ErrorResponse error = new ErrorResponse(
+            "Error de validación",
+            "Datos de entrada inválidos",
+            HttpStatus.BAD_REQUEST.value(),
+            LocalDateTime.now()
         );
-        
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error("Validation Error")
-                .message("Error de validación en los datos de entrada")
-                .details(errors)
-                .build();
-        
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        log.error("Error interno del servidor: {}", ex.getMessage(), ex);
-        
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Internal Server Error")
-                .message("Error interno del servidor")
-                .build();
-        
+        ErrorResponse error = new ErrorResponse(
+            "Error interno del servidor",
+            ex.getMessage(),
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            LocalDateTime.now()
+        );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+    
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        ErrorResponse error = new ErrorResponse(
+            "Error en el formato de la solicitud",
+            "El cuerpo de la solicitud no es válido",
+            HttpStatus.BAD_REQUEST.value(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParameter(MissingServletRequestParameterException ex) {
+        ErrorResponse error = new ErrorResponse(
+            "Parámetro requerido faltante",
+            "El parámetro '" + ex.getParameterName() + "' es requerido",
+            HttpStatus.BAD_REQUEST.value(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 } 
