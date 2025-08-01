@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import com.tuempresa.ordenes.application.dto.ItemOrdenResponse;
+import com.tuempresa.ordenes.domain.model.ItemOrden;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +22,23 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
     
     @Override
     public OrdenResponse obtenerOrdenPorId(UUID ordenId) {
-        Orden orden = ordenRepository.buscarPorId(ordenId)
+        var orden = ordenRepository.buscarPorId(ordenId)
                 .orElseThrow(() -> new OrdenNoEncontradaException(ordenId));
         
-        return convertirAOrdenResponse(orden);
+        return new OrdenResponse(
+            orden.getId(),
+            orden.getNumeroOrden(),
+            orden.getClienteId(),
+            orden.getClienteNombre(),
+            orden.getClienteEmail(),
+            orden.getTotal(),
+            orden.getEstado().toString(),
+            orden.getFechaCreacion(),
+            orden.getFechaActualizacion(),
+            orden.getItems().stream()
+                .map(this::convertirAItemOrdenResponse)
+                .collect(Collectors.toList())
+        );
     }
     
     @Override
@@ -48,34 +64,33 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
     }
     
     private OrdenResponse convertirAOrdenResponse(Orden orden) {
-        return OrdenResponse.builder()
-                .id(orden.getId())
-                .numeroOrden(orden.getNumeroOrden())
-                .clienteId(orden.getClienteId())
-                .clienteNombre(orden.getClienteNombre())
-                .clienteEmail(orden.getClienteEmail())
-                .total(orden.getTotal())
-                .estado(orden.getEstado())
-                .fechaCreacion(orden.getFechaCreacion())
-                .fechaActualizacion(orden.getFechaActualizacion())
-                .items(orden.getItems().stream()
-                        .map(this::convertirAItemOrdenResponse)
-                        .toList())
-                .build();
+        return new OrdenResponse(
+            orden.getId(),
+            orden.getNumeroOrden(),
+            orden.getClienteId(),
+            orden.getClienteNombre(),
+            orden.getClienteEmail(),
+            orden.getTotal(),
+            orden.getEstado().toString(),
+            orden.getFechaCreacion(),
+            orden.getFechaActualizacion(),
+            orden.getItems().stream()
+                .map(this::convertirAItemOrdenResponse)
+                .collect(Collectors.toList())
+        );
     }
     
-    private com.tuempresa.ordenes.application.dto.ItemOrdenResponse convertirAItemOrdenResponse(com.tuempresa.ordenes.domain.model.ItemOrden item) {
-        return com.tuempresa.ordenes.application.dto.ItemOrdenResponse.builder()
-                .id(item.getId())
-                .ordenId(item.getOrdenId())
-                .productoId(item.getProductoId())
-                .productoNombre(item.getProductoNombre())
-                .productoDescripcion(item.getProductoDescripcion())
-                .precioUnitario(item.getPrecioUnitario())
-                .cantidad(item.getCantidad())
-                .subtotal(item.getSubtotal())
-                .fechaCreacion(item.getFechaCreacion())
-                .fechaActualizacion(item.getFechaActualizacion())
-                .build();
+    private ItemOrdenResponse convertirAItemOrdenResponse(ItemOrden item) {
+        return new ItemOrdenResponse(
+            item.getId(),
+            item.getProductoId(),
+            item.getProductoNombre(),
+            item.getProductoDescripcion(),
+            item.getPrecioUnitario(),
+            item.getCantidad(),
+            item.getSubtotal(),
+            item.getFechaCreacion(),
+            item.getFechaActualizacion()
+        );
     }
 } 

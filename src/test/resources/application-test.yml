@@ -1,0 +1,67 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ordenes-test-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Kafka topics configuration for tests
+kafka:
+  topics:
+    orden-created: test-orden-created
+    orden-updated: test-orden-updated
+    orden-cancelled: test-orden-cancelled
+    item-orden-created: test-item-orden-created
+    item-orden-updated: test-item-orden-updated
+    item-orden-deleted: test-item-orden-deleted
+
+# RabbitMQ queues configuration for tests
+rabbitmq:
+  queues:
+    orden-created: test-orden-created
+    orden-cancelled: test-orden-cancelled
+    item-orden-created: test-item-orden-created
+
+# External service configuration for tests
+external:
+  services:
+    inventory:
+      url: http://localhost:8081/api/inventory
+      timeout: 1000
+    payment:
+      url: http://localhost:8082/api/payment
+      timeout: 1000
+
+# Test configuration
+logging:
+  level:
+    com.tuempresa.ordenes: DEBUG
+    org.springframework.kafka: WARN
+    org.springframework.amqp: WARN
+    org.hibernate.SQL: WARN 

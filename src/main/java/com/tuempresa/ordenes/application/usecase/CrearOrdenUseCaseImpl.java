@@ -3,91 +3,131 @@ package com.tuempresa.ordenes.application.usecase;
 import com.tuempresa.ordenes.application.dto.CrearOrdenRequest;
 import com.tuempresa.ordenes.application.dto.OrdenResponse;
 import com.tuempresa.ordenes.application.port.in.CrearOrdenUseCase;
-import com.tuempresa.ordenes.application.port.out.EventPublisher;
 import com.tuempresa.ordenes.application.port.out.OrdenRepository;
-import com.tuempresa.ordenes.domain.event.OrdenCreadaEvent;
-import com.tuempresa.ordenes.domain.model.ItemOrden;
+import com.tuempresa.ordenes.application.port.out.ItemOrdenRepository;
+import com.tuempresa.ordenes.application.port.out.EventPublisher;
 import com.tuempresa.ordenes.domain.model.Orden;
-import com.tuempresa.ordenes.domain.service.OrdenDomainService;
+import com.tuempresa.ordenes.domain.model.ItemOrden;
+import com.tuempresa.ordenes.domain.model.OrdenEstado;
+import com.tuempresa.ordenes.domain.event.OrdenCreadaEvent;
+import com.tuempresa.ordenes.domain.event.ItemOrdenCreadoEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
 public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
     
     private final OrdenRepository ordenRepository;
+    private final ItemOrdenRepository itemOrdenRepository;
     private final EventPublisher eventPublisher;
-    private final OrdenDomainService ordenDomainService;
     
     @Override
     public OrdenResponse crearOrden(CrearOrdenRequest request) {
         // Crear la orden
-        Orden orden = new Orden(
-            request.getClienteId(),
-            request.getClienteNombre(),
-            request.getClienteEmail()
-        );
-        
-        // Validar la orden
-        ordenDomainService.validarOrden(orden);
-        
-        // Agregar items a la orden
-        if (request.getItems() != null) {
-            for (var itemRequest : request.getItems()) {
-                ItemOrden item = new ItemOrden(
-                    orden.getId(),
-                    itemRequest.getProductoId(),
-                    itemRequest.getProductoNombre(),
-                    itemRequest.getProductoDescripcion(),
-                    itemRequest.getPrecioUnitario(),
-                    itemRequest.getCantidad()
-                );
-                
-                ordenDomainService.validarItemOrden(item);
-                orden.agregarItem(item);
-            }
-        }
+        Orden orden = Orden.builder()
+                .id(UUID.randomUUID())
+                .numeroOrden(generarNumeroOrden())
+                .clienteId(request.clienteId())
+                .clienteNombre(request.clienteNombre())
+                .clienteEmail(request.clienteEmail())
+                .estado(OrdenEstado.PENDIENTE)
+                .total(BigDecimal.ZERO)
+                .fechaCreacion(LocalDateTime.now())
+                .fechaActualizacion(LocalDateTime.now())
+                .build();
         
         // Guardar la orden
         Orden ordenGuardada = ordenRepository.guardar(orden);
+        final UUID ordenId = ordenGuardada.getId();
+        // Procesar items si existen (final y solo asignado una vez)
+        final List<ItemOrden> itemsGuardados =
+            (request.items() != null && !request.items().isEmpty())
+                ? request.items().stream()
+                    .map(itemRequest -> crearItemOrden(ordenId, itemRequest))
+                    .collect(Collectors.toList())
+                : List.of();
         
-        // Publicar evento
-        eventPublisher.publicarEvento(new OrdenCreadaEvent(ordenGuardada));
+        // Actualizar total de la orden
+        BigDecimal total = itemsGuardados.stream()
+                .map(ItemOrden::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-        // Convertir a DTO de respuesta
-        return convertirAOrdenResponse(ordenGuardada);
+        ordenGuardada = ordenGuardada.toBuilder()
+                .total(total)
+                .items(itemsGuardados)
+                .fechaActualizacion(LocalDateTime.now())
+                .build();
+        
+        Orden ordenFinal = ordenRepository.guardar(ordenGuardada);
+        
+        // Publicar eventos
+        eventPublisher.publicarEvento(new OrdenCreadaEvent(ordenFinal));
+        
+        // Publicar eventos de items
+        itemsGuardados.forEach(item -> 
+            eventPublisher.publicarEvento(new ItemOrdenCreadoEvent(item))
+        );
+        
+        return convertirAOrdenResponse(ordenFinal);
+    }
+    
+    private ItemOrden crearItemOrden(UUID ordenId, com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest itemRequest) {
+        ItemOrden item = ItemOrden.builder()
+                .id(UUID.randomUUID())
+                .ordenId(ordenId)
+                .productoId(itemRequest.productoId())
+                .productoNombre(itemRequest.productoNombre())
+                .productoDescripcion(itemRequest.productoDescripcion())
+                .precioUnitario(BigDecimal.valueOf(itemRequest.precioUnitario()))
+                .cantidad(itemRequest.cantidad())
+                .subtotal(BigDecimal.valueOf(itemRequest.precioUnitario() * itemRequest.cantidad()))
+                .fechaCreacion(LocalDateTime.now())
+                .fechaActualizacion(LocalDateTime.now())
+                .build();
+        
+        return itemOrdenRepository.guardar(item);
+    }
+    
+    private String generarNumeroOrden() {
+        return "ORD-" + System.currentTimeMillis();
     }
     
     private OrdenResponse convertirAOrdenResponse(Orden orden) {
-        return OrdenResponse.builder()
-                .id(orden.getId())
-                .numeroOrden(orden.getNumeroOrden())
-                .clienteId(orden.getClienteId())
-                .clienteNombre(orden.getClienteNombre())
-                .clienteEmail(orden.getClienteEmail())
-                .total(orden.getTotal())
-                .estado(orden.getEstado())
-                .fechaCreacion(orden.getFechaCreacion())
-                .fechaActualizacion(orden.getFechaActualizacion())
-                .items(orden.getItems().stream()
-                        .map(this::convertirAItemOrdenResponse)
-                        .toList())
-                .build();
+        return new OrdenResponse(
+            orden.getId(),
+            orden.getNumeroOrden(),
+            orden.getClienteId(),
+            orden.getClienteNombre(),
+            orden.getClienteEmail(),
+            orden.getTotal(),
+            orden.getEstado().toString(),
+            orden.getFechaCreacion(),
+            orden.getFechaActualizacion(),
+            orden.getItems().stream()
+                .map(this::convertirAItemOrdenResponse)
+                .collect(Collectors.toList())
+        );
     }
     
     private com.tuempresa.ordenes.application.dto.ItemOrdenResponse convertirAItemOrdenResponse(ItemOrden item) {
-        return com.tuempresa.ordenes.application.dto.ItemOrdenResponse.builder()
-                .id(item.getId())
-                .ordenId(item.getOrdenId())
-                .productoId(item.getProductoId())
-                .productoNombre(item.getProductoNombre())
-                .productoDescripcion(item.getProductoDescripcion())
-                .precioUnitario(item.getPrecioUnitario())
-                .cantidad(item.getCantidad())
-                .subtotal(item.getSubtotal())
-                .fechaCreacion(item.getFechaCreacion())
-                .fechaActualizacion(item.getFechaActualizacion())
-                .build();
+        return new com.tuempresa.ordenes.application.dto.ItemOrdenResponse(
+            item.getId(),
+            item.getProductoId(),
+            item.getProductoNombre(),
+            item.getProductoDescripcion(),
+            item.getPrecioUnitario(),
+            item.getCantidad(),
+            item.getSubtotal(),
+            item.getFechaCreacion(),
+            item.getFechaActualizacion()
+        );
     }
 } 

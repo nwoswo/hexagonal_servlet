@@ -4,14 +4,17 @@ import com.tuempresa.ordenes.adapter.inbound.rest.dto.ItemOrdenResponse;
 import com.tuempresa.ordenes.adapter.inbound.rest.dto.OrdenResponse;
 import com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest;
 import com.tuempresa.ordenes.application.dto.CrearOrdenRequest;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-08-01T11:49:06-0500",
+    date = "2025-08-01T19:03:01-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.4.1 (Amazon.com Inc.)"
 )
 @Component
@@ -23,14 +26,19 @@ public class OrdenMapperImpl implements OrdenMapper {
             return null;
         }
 
-        CrearOrdenRequest.CrearOrdenRequestBuilder crearOrdenRequest = CrearOrdenRequest.builder();
+        List<CrearItemOrdenRequest> items = null;
+        String clienteId = null;
+        String clienteNombre = null;
+        String clienteEmail = null;
 
-        crearOrdenRequest.items( toApplicationRequestList( request.getItems() ) );
-        crearOrdenRequest.clienteId( request.getClienteId() );
-        crearOrdenRequest.clienteNombre( request.getClienteNombre() );
-        crearOrdenRequest.clienteEmail( request.getClienteEmail() );
+        items = toApplicationRequestList( request.items() );
+        clienteId = request.clienteId();
+        clienteNombre = request.clienteNombre();
+        clienteEmail = request.clienteEmail();
 
-        return crearOrdenRequest.build();
+        CrearOrdenRequest crearOrdenRequest = new CrearOrdenRequest( clienteId, clienteNombre, clienteEmail, items );
+
+        return crearOrdenRequest;
     }
 
     @Override
@@ -39,15 +47,21 @@ public class OrdenMapperImpl implements OrdenMapper {
             return null;
         }
 
-        CrearItemOrdenRequest.CrearItemOrdenRequestBuilder crearItemOrdenRequest = CrearItemOrdenRequest.builder();
+        String productoId = null;
+        String productoNombre = null;
+        String productoDescripcion = null;
+        Double precioUnitario = null;
+        Integer cantidad = null;
 
-        crearItemOrdenRequest.productoId( request.getProductoId() );
-        crearItemOrdenRequest.productoNombre( request.getProductoNombre() );
-        crearItemOrdenRequest.productoDescripcion( request.getProductoDescripcion() );
-        crearItemOrdenRequest.precioUnitario( request.getPrecioUnitario() );
-        crearItemOrdenRequest.cantidad( request.getCantidad() );
+        productoId = request.productoId();
+        productoNombre = request.productoNombre();
+        productoDescripcion = request.productoDescripcion();
+        precioUnitario = request.precioUnitario();
+        cantidad = request.cantidad();
 
-        return crearItemOrdenRequest.build();
+        CrearItemOrdenRequest crearItemOrdenRequest = new CrearItemOrdenRequest( productoId, productoNombre, productoDescripcion, precioUnitario, cantidad );
+
+        return crearItemOrdenRequest;
     }
 
     @Override
@@ -70,20 +84,31 @@ public class OrdenMapperImpl implements OrdenMapper {
             return null;
         }
 
-        OrdenResponse.OrdenResponseBuilder ordenResponse = OrdenResponse.builder();
+        UUID id = null;
+        String numeroOrden = null;
+        String clienteId = null;
+        String clienteNombre = null;
+        String clienteEmail = null;
+        BigDecimal total = null;
+        String estado = null;
+        LocalDateTime fechaCreacion = null;
+        LocalDateTime fechaActualizacion = null;
+        List<ItemOrdenResponse> items = null;
 
-        ordenResponse.id( applicationResponse.getId() );
-        ordenResponse.numeroOrden( applicationResponse.getNumeroOrden() );
-        ordenResponse.clienteId( applicationResponse.getClienteId() );
-        ordenResponse.clienteNombre( applicationResponse.getClienteNombre() );
-        ordenResponse.clienteEmail( applicationResponse.getClienteEmail() );
-        ordenResponse.total( applicationResponse.getTotal() );
-        ordenResponse.estado( applicationResponse.getEstado() );
-        ordenResponse.fechaCreacion( applicationResponse.getFechaCreacion() );
-        ordenResponse.fechaActualizacion( applicationResponse.getFechaActualizacion() );
-        ordenResponse.items( toRestResponseListItemOrdenes( applicationResponse.getItems() ) );
+        id = applicationResponse.id();
+        numeroOrden = applicationResponse.numeroOrden();
+        clienteId = applicationResponse.clienteId();
+        clienteNombre = applicationResponse.clienteNombre();
+        clienteEmail = applicationResponse.clienteEmail();
+        total = applicationResponse.total();
+        estado = applicationResponse.estado();
+        fechaCreacion = applicationResponse.fechaCreacion();
+        fechaActualizacion = applicationResponse.fechaActualizacion();
+        items = toRestResponseListItemOrdenes( applicationResponse.items() );
 
-        return ordenResponse.build();
+        OrdenResponse ordenResponse = new OrdenResponse( id, numeroOrden, clienteId, clienteNombre, clienteEmail, total, estado, fechaCreacion, fechaActualizacion, items );
+
+        return ordenResponse;
     }
 
     @Override
@@ -92,20 +117,29 @@ public class OrdenMapperImpl implements OrdenMapper {
             return null;
         }
 
-        ItemOrdenResponse.ItemOrdenResponseBuilder itemOrdenResponse = ItemOrdenResponse.builder();
+        UUID id = null;
+        String productoId = null;
+        String productoNombre = null;
+        String productoDescripcion = null;
+        BigDecimal precioUnitario = null;
+        Integer cantidad = null;
+        BigDecimal subtotal = null;
+        LocalDateTime fechaCreacion = null;
+        LocalDateTime fechaActualizacion = null;
 
-        itemOrdenResponse.id( applicationResponse.getId() );
-        itemOrdenResponse.ordenId( applicationResponse.getOrdenId() );
-        itemOrdenResponse.productoId( applicationResponse.getProductoId() );
-        itemOrdenResponse.productoNombre( applicationResponse.getProductoNombre() );
-        itemOrdenResponse.productoDescripcion( applicationResponse.getProductoDescripcion() );
-        itemOrdenResponse.precioUnitario( applicationResponse.getPrecioUnitario() );
-        itemOrdenResponse.cantidad( applicationResponse.getCantidad() );
-        itemOrdenResponse.subtotal( applicationResponse.getSubtotal() );
-        itemOrdenResponse.fechaCreacion( applicationResponse.getFechaCreacion() );
-        itemOrdenResponse.fechaActualizacion( applicationResponse.getFechaActualizacion() );
+        id = applicationResponse.id();
+        productoId = applicationResponse.productoId();
+        productoNombre = applicationResponse.productoNombre();
+        productoDescripcion = applicationResponse.productoDescripcion();
+        precioUnitario = applicationResponse.precioUnitario();
+        cantidad = applicationResponse.cantidad();
+        subtotal = applicationResponse.subtotal();
+        fechaCreacion = applicationResponse.fechaCreacion();
+        fechaActualizacion = applicationResponse.fechaActualizacion();
 
-        return itemOrdenResponse.build();
+        ItemOrdenResponse itemOrdenResponse = new ItemOrdenResponse( id, productoId, productoNombre, productoDescripcion, precioUnitario, cantidad, subtotal, fechaCreacion, fechaActualizacion );
+
+        return itemOrdenResponse;
     }
 
     @Override

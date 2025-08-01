@@ -67,7 +67,7 @@ public class OrdenController {
     @PostMapping("/{ordenId}/cancelar")
     public ResponseEntity<Void> cancelarOrden(@PathVariable UUID ordenId, 
                                            @Valid @RequestBody CancelarOrdenRequest request) {
-        cancelarOrdenUseCase.cancelarOrden(ordenId, request.getMotivo());
+        cancelarOrdenUseCase.cancelarOrden(ordenId, request.motivo());
         return ResponseEntity.noContent().build();
     }
     
