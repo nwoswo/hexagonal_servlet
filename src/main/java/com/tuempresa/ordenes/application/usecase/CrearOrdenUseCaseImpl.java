@@ -47,7 +47,8 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
         // Guardar la orden
         Orden ordenGuardada = ordenRepository.guardar(orden);
         final UUID ordenId = ordenGuardada.getId();
-        // Procesar items si existen (final y solo asignado una vez)
+        
+        // Procesar items si existen
         final List<ItemOrden> itemsGuardados =
             (request.items() != null && !request.items().isEmpty())
                 ? request.items().stream()
@@ -55,26 +56,20 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
                     .collect(Collectors.toList())
                 : List.of();
         
-        // Actualizar total de la orden
-        BigDecimal total = itemsGuardados.stream()
-                .map(ItemOrden::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
-        ordenGuardada = ordenGuardada.toBuilder()
-                .total(total)
-                .items(itemsGuardados)
-                .fechaActualizacion(LocalDateTime.now())
-                .build();
+        // Agregar items a la orden usando el método del dominio
+        itemsGuardados.forEach(ordenGuardada::agregarItem);
         
         Orden ordenFinal = ordenRepository.guardar(ordenGuardada);
         
         // Publicar eventos
         eventPublisher.publicarEvento(new OrdenCreadaEvent(ordenFinal));
         
-        // Publicar eventos de items
-        itemsGuardados.forEach(item -> 
-            eventPublisher.publicarEvento(new ItemOrdenCreadoEvent(item))
-        );
+        // Publicar eventos de items solo si la orden tiene items
+        if (ordenFinal.tieneItems()) {
+            itemsGuardados.forEach(item -> 
+                eventPublisher.publicarEvento(new ItemOrdenCreadoEvent(item))
+            );
+        }
         
         return convertirAOrdenResponse(ordenFinal);
     }
@@ -92,6 +87,11 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
                 .fechaCreacion(LocalDateTime.now())
                 .fechaActualizacion(LocalDateTime.now())
                 .build();
+        
+        // Validar que el item sea válido usando el método del dominio
+        if (!item.esValido()) {
+            throw new IllegalArgumentException("El item de orden no es válido");
+        }
         
         return itemOrdenRepository.guardar(item);
     }

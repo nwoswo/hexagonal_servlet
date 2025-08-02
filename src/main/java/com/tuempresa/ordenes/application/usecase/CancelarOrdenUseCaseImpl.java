@@ -2,14 +2,14 @@ package com.tuempresa.ordenes.application.usecase;
 
 import com.tuempresa.ordenes.application.port.in.CancelarOrdenUseCase;
 import com.tuempresa.ordenes.application.port.out.OrdenRepository;
+import com.tuempresa.ordenes.application.port.out.EventPublisher;
+import com.tuempresa.ordenes.domain.event.OrdenCanceladaEvent;
 import com.tuempresa.ordenes.domain.exception.OrdenNoEncontradaException;
 import com.tuempresa.ordenes.domain.exception.OrdenNoPuedeSerCanceladaException;
 import com.tuempresa.ordenes.domain.model.Orden;
-import com.tuempresa.ordenes.domain.model.OrdenEstado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -17,25 +17,25 @@ import java.util.UUID;
 public class CancelarOrdenUseCaseImpl implements CancelarOrdenUseCase {
     
     private final OrdenRepository ordenRepository;
+    private final EventPublisher eventPublisher;
     
     @Override
     public void cancelarOrden(UUID ordenId, String motivo) {
         Orden orden = ordenRepository.buscarPorId(ordenId)
                 .orElseThrow(() -> new OrdenNoEncontradaException(ordenId));
         
-        if (orden.getEstado() == OrdenEstado.CANCELADA) {
+        // Usar el método del dominio para validar si puede ser cancelada
+        if (!orden.puedeSerCancelada()) {
             throw new OrdenNoPuedeSerCanceladaException(ordenId);
         }
         
-        if (orden.getEstado() == OrdenEstado.ENTREGADA) {
-            throw new OrdenNoPuedeSerCanceladaException(ordenId);
-        }
+        // Usar el método del dominio para cancelar la orden
+        orden.cancelar();
         
-        Orden ordenCancelada = orden.toBuilder()
-                .estado(OrdenEstado.CANCELADA)
-                .fechaActualizacion(LocalDateTime.now())
-                .build();
+        // Guardar la orden cancelada
+        ordenRepository.guardar(orden);
         
-        ordenRepository.guardar(ordenCancelada);
+        // Publicar evento de cancelación
+        eventPublisher.publicarEvento(new OrdenCanceladaEvent(orden, motivo));
     }
 } 

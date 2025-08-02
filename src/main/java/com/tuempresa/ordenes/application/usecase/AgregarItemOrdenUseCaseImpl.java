@@ -48,14 +48,11 @@ public class AgregarItemOrdenUseCaseImpl implements AgregarItemOrdenUseCase {
         // Guardar el item
         ItemOrden itemGuardado = itemOrdenRepository.guardar(item);
         
-        // Actualizar total de la orden
-        BigDecimal nuevoTotal = orden.getTotal().add(itemGuardado.getSubtotal());
-        Orden ordenActualizada = orden.toBuilder()
-                .total(nuevoTotal)
-                .fechaActualizacion(LocalDateTime.now())
-                .build();
+        // Usar el método del dominio para agregar el item a la orden
+        orden.agregarItem(itemGuardado);
         
-        ordenRepository.guardar(ordenActualizada);
+        // Guardar la orden actualizada
+        ordenRepository.guardar(orden);
         
         // Publicar evento
         eventPublisher.publicarEvento(new ItemOrdenCreadoEvent(itemGuardado));

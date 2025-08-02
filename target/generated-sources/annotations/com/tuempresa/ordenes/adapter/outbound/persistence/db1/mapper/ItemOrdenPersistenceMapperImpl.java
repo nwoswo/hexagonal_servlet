@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-08-01T19:03:01-0500",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.4.1 (Amazon.com Inc.)"
+    date = "2025-08-01T21:45:23-0500",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.42.50.v20250729-0351, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ItemOrdenPersistenceMapperImpl implements ItemOrdenPersistenceMapper {
@@ -23,16 +23,16 @@ public class ItemOrdenPersistenceMapperImpl implements ItemOrdenPersistenceMappe
 
         ItemOrdenEntity.ItemOrdenEntityBuilder itemOrdenEntity = ItemOrdenEntity.builder();
 
+        itemOrdenEntity.cantidad( itemOrden.getCantidad() );
+        itemOrdenEntity.fechaActualizacion( itemOrden.getFechaActualizacion() );
+        itemOrdenEntity.fechaCreacion( itemOrden.getFechaCreacion() );
         itemOrdenEntity.id( itemOrden.getId() );
         itemOrdenEntity.ordenId( itemOrden.getOrdenId() );
+        itemOrdenEntity.precioUnitario( itemOrden.getPrecioUnitario() );
+        itemOrdenEntity.productoDescripcion( itemOrden.getProductoDescripcion() );
         itemOrdenEntity.productoId( itemOrden.getProductoId() );
         itemOrdenEntity.productoNombre( itemOrden.getProductoNombre() );
-        itemOrdenEntity.productoDescripcion( itemOrden.getProductoDescripcion() );
-        itemOrdenEntity.precioUnitario( itemOrden.getPrecioUnitario() );
-        itemOrdenEntity.cantidad( itemOrden.getCantidad() );
         itemOrdenEntity.subtotal( itemOrden.getSubtotal() );
-        itemOrdenEntity.fechaCreacion( itemOrden.getFechaCreacion() );
-        itemOrdenEntity.fechaActualizacion( itemOrden.getFechaActualizacion() );
 
         return itemOrdenEntity.build();
     }
@@ -45,16 +45,16 @@ public class ItemOrdenPersistenceMapperImpl implements ItemOrdenPersistenceMappe
 
         ItemOrden.ItemOrdenBuilder itemOrden = ItemOrden.builder();
 
+        itemOrden.cantidad( entity.getCantidad() );
+        itemOrden.fechaActualizacion( entity.getFechaActualizacion() );
+        itemOrden.fechaCreacion( entity.getFechaCreacion() );
         itemOrden.id( entity.getId() );
         itemOrden.ordenId( entity.getOrdenId() );
+        itemOrden.precioUnitario( entity.getPrecioUnitario() );
+        itemOrden.productoDescripcion( entity.getProductoDescripcion() );
         itemOrden.productoId( entity.getProductoId() );
         itemOrden.productoNombre( entity.getProductoNombre() );
-        itemOrden.productoDescripcion( entity.getProductoDescripcion() );
-        itemOrden.precioUnitario( entity.getPrecioUnitario() );
-        itemOrden.cantidad( entity.getCantidad() );
         itemOrden.subtotal( entity.getSubtotal() );
-        itemOrden.fechaCreacion( entity.getFechaCreacion() );
-        itemOrden.fechaActualizacion( entity.getFechaActualizacion() );
 
         return itemOrden.build();
     }
