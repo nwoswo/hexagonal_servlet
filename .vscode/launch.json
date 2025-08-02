@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-OrdersApplication<ordenes>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tuempresa.ordenes.OrdersApplication",
+            "projectName": "ordenes",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-OrdersApplication<ordenes-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tuempresa.ordenes.OrdersApplication",
+            "projectName": "ordenes-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

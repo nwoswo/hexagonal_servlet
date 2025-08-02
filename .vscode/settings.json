@@ -27,5 +27,6 @@
         "list.activeSelectionBackground": "#681DD74d",
         "panelTitle.activeBorder": "#752ae4"
     },
-    "window.title": "hexa_cursor3"
+    "window.title": "hexa_cursor3",
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

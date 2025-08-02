@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-08-01T21:43:45-0500",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.4.1 (Amazon.com Inc.)"
+    date = "2025-08-01T22:04:43-0500",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.42.50.v20250729-0351, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class OrdenMapperImpl implements OrdenMapper {
@@ -26,15 +26,15 @@ public class OrdenMapperImpl implements OrdenMapper {
             return null;
         }
 
-        List<CrearItemOrdenRequest> items = null;
         String clienteId = null;
         String clienteNombre = null;
         String clienteEmail = null;
+        List<CrearItemOrdenRequest> items = null;
 
-        items = toApplicationRequestList( request.items() );
         clienteId = request.clienteId();
         clienteNombre = request.clienteNombre();
         clienteEmail = request.clienteEmail();
+        items = toApplicationRequestList( request.items() );
 
         CrearOrdenRequest crearOrdenRequest = new CrearOrdenRequest( clienteId, clienteNombre, clienteEmail, items );
 

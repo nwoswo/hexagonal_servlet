@@ -2,7 +2,9 @@ package com.tuempresa.ordenes.adapter.inbound.rest.controller;
 
 import com.tuempresa.ordenes.adapter.inbound.rest.dto.CancelarOrdenRequest;
 import com.tuempresa.ordenes.adapter.inbound.rest.dto.CrearOrdenRequest;
+import com.tuempresa.ordenes.adapter.inbound.rest.dto.CrearItemOrdenRequest;
 import com.tuempresa.ordenes.adapter.inbound.rest.dto.OrdenResponse;
+import com.tuempresa.ordenes.adapter.inbound.rest.dto.ItemOrdenResponse;
 import com.tuempresa.ordenes.adapter.inbound.rest.mapper.OrdenMapper;
 import com.tuempresa.ordenes.application.port.in.AgregarItemOrdenUseCase;
 import com.tuempresa.ordenes.application.port.in.CancelarOrdenUseCase;
@@ -72,9 +74,9 @@ public class OrdenController {
     }
     
     @PostMapping("/{ordenId}/items")
-    public ResponseEntity<com.tuempresa.ordenes.adapter.inbound.rest.dto.ItemOrdenResponse> agregarItemAOrden(
+    public ResponseEntity<ItemOrdenResponse> agregarItemAOrden(
             @PathVariable UUID ordenId,
-            @Valid @RequestBody com.tuempresa.ordenes.adapter.inbound.rest.dto.CrearItemOrdenRequest request) {
+            @Valid @RequestBody CrearItemOrdenRequest request) {
         var applicationRequest = ordenMapper.toApplicationRequest(request);
         var applicationResponse = agregarItemOrdenUseCase.agregarItemAOrden(ordenId, applicationRequest);
         var response = ordenMapper.toRestResponse(applicationResponse);
