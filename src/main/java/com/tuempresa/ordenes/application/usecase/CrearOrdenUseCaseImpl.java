@@ -1,7 +1,7 @@
 package com.tuempresa.ordenes.application.usecase;
 
-import com.tuempresa.ordenes.application.dto.CrearOrdenRequest;
-import com.tuempresa.ordenes.application.dto.OrdenResponse;
+import com.tuempresa.ordenes.application.dto.CrearOrdenCommand;
+import com.tuempresa.ordenes.application.dto.OrdenData;
 import com.tuempresa.ordenes.application.port.in.CrearOrdenUseCase;
 import com.tuempresa.ordenes.application.port.out.OrdenRepository;
 import com.tuempresa.ordenes.application.port.out.ItemOrdenRepository;
@@ -30,7 +30,7 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
     private final EventPublisher eventPublisher;
     
     @Override
-    public OrdenResponse crearOrden(CrearOrdenRequest request) {
+    public OrdenData crearOrden(CrearOrdenCommand request) {
         // Crear la orden
         Orden orden = Orden.builder()
                 .id(UUID.randomUUID())
@@ -74,7 +74,7 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
         return convertirAOrdenResponse(ordenFinal);
     }
     
-    private ItemOrden crearItemOrden(UUID ordenId, com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest itemRequest) {
+    private ItemOrden crearItemOrden(UUID ordenId, com.tuempresa.ordenes.application.dto.CrearItemOrdenCommand itemRequest) {
         ItemOrden item = ItemOrden.builder()
                 .id(UUID.randomUUID())
                 .ordenId(ordenId)
@@ -100,8 +100,8 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
         return "ORD-" + System.currentTimeMillis();
     }
     
-    private OrdenResponse convertirAOrdenResponse(Orden orden) {
-        return new OrdenResponse(
+    private OrdenData convertirAOrdenResponse(Orden orden) {
+        return new OrdenData(
             orden.getId(),
             orden.getNumeroOrden(),
             orden.getClienteId(),
@@ -117,8 +117,8 @@ public class CrearOrdenUseCaseImpl implements CrearOrdenUseCase {
         );
     }
     
-    private com.tuempresa.ordenes.application.dto.ItemOrdenResponse convertirAItemOrdenResponse(ItemOrden item) {
-        return new com.tuempresa.ordenes.application.dto.ItemOrdenResponse(
+    private com.tuempresa.ordenes.application.dto.ItemOrdenData convertirAItemOrdenResponse(ItemOrden item) {
+        return new com.tuempresa.ordenes.application.dto.ItemOrdenData(
             item.getId(),
             item.getProductoId(),
             item.getProductoNombre(),

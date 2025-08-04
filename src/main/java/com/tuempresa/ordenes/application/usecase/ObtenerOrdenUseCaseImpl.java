@@ -1,6 +1,6 @@
 package com.tuempresa.ordenes.application.usecase;
 
-import com.tuempresa.ordenes.application.dto.OrdenResponse;
+import com.tuempresa.ordenes.application.dto.OrdenData;
 import com.tuempresa.ordenes.application.port.in.ObtenerOrdenUseCase;
 import com.tuempresa.ordenes.application.port.out.OrdenRepository;
 import com.tuempresa.ordenes.domain.exception.OrdenNoEncontradaException;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import com.tuempresa.ordenes.application.dto.ItemOrdenResponse;
+import com.tuempresa.ordenes.application.dto.ItemOrdenData;
 import com.tuempresa.ordenes.domain.model.ItemOrden;
 
 @Service
@@ -21,11 +21,11 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
     private final OrdenRepository ordenRepository;
     
     @Override
-    public OrdenResponse obtenerOrdenPorId(UUID ordenId) {
+    public OrdenData obtenerOrdenPorId(UUID ordenId) {
         var orden = ordenRepository.buscarPorId(ordenId)
                 .orElseThrow(() -> new OrdenNoEncontradaException(ordenId));
         
-        return new OrdenResponse(
+        return new OrdenData(
             orden.getId(),
             orden.getNumeroOrden(),
             orden.getClienteId(),
@@ -42,7 +42,7 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
     }
     
     @Override
-    public OrdenResponse obtenerOrdenPorNumero(String numeroOrden) {
+    public OrdenData obtenerOrdenPorNumero(String numeroOrden) {
         Orden orden = ordenRepository.buscarPorNumero(numeroOrden)
                 .orElseThrow(() -> new OrdenNoEncontradaException(numeroOrden));
         
@@ -50,21 +50,21 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
     }
     
     @Override
-    public List<OrdenResponse> obtenerTodasLasOrdenes() {
+    public List<OrdenData> obtenerTodasLasOrdenes() {
         return ordenRepository.buscarTodas().stream()
                 .map(this::convertirAOrdenResponse)
                 .toList();
     }
     
     @Override
-    public List<OrdenResponse> obtenerOrdenesPorCliente(String clienteId) {
+    public List<OrdenData> obtenerOrdenesPorCliente(String clienteId) {
         return ordenRepository.buscarPorClienteId(clienteId).stream()
                 .map(this::convertirAOrdenResponse)
                 .toList();
     }
     
-    private OrdenResponse convertirAOrdenResponse(Orden orden) {
-        return new OrdenResponse(
+    private OrdenData convertirAOrdenResponse(Orden orden) {
+        return new OrdenData(
             orden.getId(),
             orden.getNumeroOrden(),
             orden.getClienteId(),
@@ -80,8 +80,8 @@ public class ObtenerOrdenUseCaseImpl implements ObtenerOrdenUseCase {
         );
     }
     
-    private ItemOrdenResponse convertirAItemOrdenResponse(ItemOrden item) {
-        return new ItemOrdenResponse(
+    private ItemOrdenData convertirAItemOrdenResponse(ItemOrden item) {
+        return new ItemOrdenData(
             item.getId(),
             item.getProductoId(),
             item.getProductoNombre(),

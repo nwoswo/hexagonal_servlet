@@ -11,18 +11,18 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface OrdenMapper {
     
-    com.tuempresa.ordenes.application.dto.CrearOrdenRequest toApplicationRequest(CrearOrdenRequest request);
+    com.tuempresa.ordenes.application.dto.CrearOrdenCommand toApplicationRequest(CrearOrdenRequest request);
     
-    com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest toApplicationRequest(CrearItemOrdenRequest request);
+    com.tuempresa.ordenes.application.dto.CrearItemOrdenCommand toApplicationRequest(CrearItemOrdenRequest request);
     
-    List<com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest> toApplicationRequestList(List<CrearItemOrdenRequest> items);
+    List<com.tuempresa.ordenes.application.dto.CrearItemOrdenCommand> toApplicationRequestList(List<CrearItemOrdenRequest> items);
     
     // Métodos para convertir de DTOs de aplicación a DTOs de REST
-    OrdenResponse toRestResponse(com.tuempresa.ordenes.application.dto.OrdenResponse applicationResponse);
+    OrdenResponse toRestResponse(com.tuempresa.ordenes.application.dto.OrdenData applicationResponse);
     
-    ItemOrdenResponse toRestResponse(com.tuempresa.ordenes.application.dto.ItemOrdenResponse applicationResponse);
+    ItemOrdenResponse toRestResponse(com.tuempresa.ordenes.application.dto.ItemOrdenData applicationResponse);
     
-    List<OrdenResponse> toRestResponseListOrdenes(List<com.tuempresa.ordenes.application.dto.OrdenResponse> applicationResponses);
+    List<OrdenResponse> toRestResponseListOrdenes(List<com.tuempresa.ordenes.application.dto.OrdenData> applicationResponses);
     
-    List<ItemOrdenResponse> toRestResponseListItemOrdenes(List<com.tuempresa.ordenes.application.dto.ItemOrdenResponse> applicationResponses);
+    List<ItemOrdenResponse> toRestResponseListItemOrdenes(List<com.tuempresa.ordenes.application.dto.ItemOrdenData> applicationResponses);
 } 

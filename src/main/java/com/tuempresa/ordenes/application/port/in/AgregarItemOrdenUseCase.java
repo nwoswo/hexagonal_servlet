@@ -1,11 +1,11 @@
 package com.tuempresa.ordenes.application.port.in;
 
-import com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest;
-import com.tuempresa.ordenes.application.dto.ItemOrdenResponse;
+import com.tuempresa.ordenes.application.dto.CrearItemOrdenCommand;
+import com.tuempresa.ordenes.application.dto.ItemOrdenData;
 
 import java.util.UUID;
 
 public interface AgregarItemOrdenUseCase {
     
-    ItemOrdenResponse agregarItemAOrden(UUID ordenId, CrearItemOrdenRequest request);
+    ItemOrdenData agregarItemAOrden(UUID ordenId, CrearItemOrdenCommand request);
 } 

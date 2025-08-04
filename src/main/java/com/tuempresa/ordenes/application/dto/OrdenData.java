@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record OrdenResponse(
+public record OrdenData(
     UUID id,
     String numeroOrden,
     String clienteId,
@@ -15,5 +15,5 @@ public record OrdenResponse(
     String estado,
     LocalDateTime fechaCreacion,
     LocalDateTime fechaActualizacion,
-    List<ItemOrdenResponse> items
+    List<ItemOrdenData> items
 ) {} 

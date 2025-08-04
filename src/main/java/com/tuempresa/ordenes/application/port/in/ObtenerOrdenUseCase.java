@@ -1,17 +1,17 @@
 package com.tuempresa.ordenes.application.port.in;
 
-import com.tuempresa.ordenes.application.dto.OrdenResponse;
+import com.tuempresa.ordenes.application.dto.OrdenData;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ObtenerOrdenUseCase {
     
-    OrdenResponse obtenerOrdenPorId(UUID ordenId);
+    OrdenData obtenerOrdenPorId(UUID ordenId);
     
-    OrdenResponse obtenerOrdenPorNumero(String numeroOrden);
+    OrdenData obtenerOrdenPorNumero(String numeroOrden);
     
-    List<OrdenResponse> obtenerTodasLasOrdenes();
+    List<OrdenData> obtenerTodasLasOrdenes();
     
-    List<OrdenResponse> obtenerOrdenesPorCliente(String clienteId);
+    List<OrdenData> obtenerOrdenesPorCliente(String clienteId);
 } 

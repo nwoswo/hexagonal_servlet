@@ -1,7 +1,7 @@
 package com.tuempresa.ordenes.application.usecase;
 
-import com.tuempresa.ordenes.application.dto.CrearItemOrdenRequest;
-import com.tuempresa.ordenes.application.dto.ItemOrdenResponse;
+import com.tuempresa.ordenes.application.dto.CrearItemOrdenCommand;
+import com.tuempresa.ordenes.application.dto.ItemOrdenData;
 import com.tuempresa.ordenes.application.port.in.AgregarItemOrdenUseCase;
 import com.tuempresa.ordenes.application.port.out.OrdenRepository;
 import com.tuempresa.ordenes.application.port.out.ItemOrdenRepository;
@@ -26,7 +26,7 @@ public class AgregarItemOrdenUseCaseImpl implements AgregarItemOrdenUseCase {
     private final EventPublisher eventPublisher;
     
     @Override
-    public ItemOrdenResponse agregarItemAOrden(UUID ordenId, CrearItemOrdenRequest request) {
+    public ItemOrdenData agregarItemAOrden(UUID ordenId, CrearItemOrdenCommand request) {
         // Verificar que la orden existe
         Orden orden = ordenRepository.buscarPorId(ordenId)
                 .orElseThrow(() -> new OrdenNoEncontradaException(ordenId));
@@ -60,8 +60,8 @@ public class AgregarItemOrdenUseCaseImpl implements AgregarItemOrdenUseCase {
         return convertirAItemOrdenResponse(itemGuardado);
     }
     
-    private ItemOrdenResponse convertirAItemOrdenResponse(ItemOrden item) {
-        return new ItemOrdenResponse(
+    private ItemOrdenData convertirAItemOrdenResponse(ItemOrden item) {
+        return new ItemOrdenData(
             item.getId(),
             item.getProductoId(),
             item.getProductoNombre(),
